@@ -1,0 +1,27 @@
+Package: quantgenCR
+Type: Package
+Title: Quantitative genetics for consumer-resource model.
+Version: 0.1.0
+Date: 2018-11-13
+Authors@R: person(c("Lucas", "A."), "Nell", email = "lucas@lucasnell.com", 
+                    role = c("cph", "aut", "cre"),
+                    comment = c(ORCID = "0000-0003-3209-0517"))
+Description: More about what it does (maybe more than
+      one line)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    Rcpp (>= 0.12.19),
+    RcppProgress (>= 0.1)
+LinkingTo:
+    Rcpp,
+    RcppArmadillo,
+    RcppProgress
+SystemRequirements: C++11
+RoxygenNote: 6.1.0
+Roxygen: list(markdown = TRUE)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
