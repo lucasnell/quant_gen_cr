@@ -390,99 +390,40 @@ void one_trial(TrialInfo& out_resource,
 
 //' Multiple trials for a given set of parameter values.
 //'
-//' @param n_trials Number of trials to perform.
-//' @param N0 Vector containing the starting abundance(s) for each resource.
-//' @param P0 Vector containing the starting abundance(s) for each consumer.
-//' @param V0 Matrix containing the starting trait value(s) for each resource.
-//'     Each row refers to a particular resource.
-//' @param U0 Matrix containing the starting trait value(s) for each consumer.
-//'     Each row refers to a particular consumer.
-//' @param r Base growth rate for resources.
-//' @param a Baseline competition coefficient for resources.
-//' @param f Cost of defensive traits for resources.
-//' @param b Coefficient for attack rate of consumers on resources.
-//' @param c Base growth rate for consumers.
-//' @param m Mortality rate for consumers.
-//' @param g Cost of offensive traits for consumers.
-//' @param etaN Non-additive effect of increasing 2+ traits for resources.
-//' @param etaP Non-additive effect of increasing 2+ traits for consumers.
-//' @param sig2N Additive genetic variance for resources.
-//' @param sig2P Additive genetic variance for consumers.
-//' @param delta SD for log-normal distribution generating perturbation after the
-//'     starting time steps.
-//' @param delta2 SD for log-normal distribution generating perturbation at the
-//'     halfway point in the primary time steps.
-//' @param start_t Number of starting time steps.
-//' @param max_t Number of primary time steps.
-//' @param density_threshold Threshold for extinction. Defaults to `1e-5`.
-//' @param precision Threshold for considering rows of traits to be the same.
-//'     Defaults to `1e-2`.
-//' @param n_cores Number of cores to use for processing.
-//'     Ignored if not compiled using OpenMP. Defaults to `1`.
-//' @param show_progress Boolean for whether to show a progress bar. Defaults to `TRUE`.
-//' @param return_every Integer specifing the number of iterations (after the starting
-//'     iterations) at which to output values of abundances and trait values.
-//'     Values <= 0 mean that only final values are output.
-//'     NOTE: A high value of `max_t` and a low value of `return_every` will result in
-//'     a massive object being output.
-//'     Defaults to `0`.
+//' @inheritParams quantgen_trials
 //'
-//' @return A list containing the following components:
-//' * `resource`: Info for resource(s).
-//' * `consumer`: Info for consumer(s).
-//'
-//' Both `resource` and `consumer` have the same structure:
-//'
-//' * If `return_every <= 0`, a matrix with the following columns (in order):
-//'     * The trial number
-//'     * The final fitness
-//'     * The final selection pressure
-//'     * The final trait values (1 column for each trait)
-//' * If `return_every > 0`, a list with the following items:
-//'     * `final`: Matrix of final values for each trial (just like if
-//'       `return_every <= 0`).
-//'     * `past_abund`: A list of matrices (one for each trial).
-//'       Each matrix contains species abundances through time,
-//'       where rows are species and columns are time.
-//'     * `past_traits`: A list of 3D arrays (one for each rial).
-//'       Each array contains species traits through time,
-//'       where rows are species, columns are traits, "slices" are time.
-//'
-//' @export
+//' @noRd
 //'
 //[[Rcpp::export]]
-List quantgen_trials(const uint32_t& n_trials,
-                     const arma::vec& N0,
-                     const arma::vec& P0,
-                     const arma::mat& V0,
-                     const arma::mat& U0,
-                     const double& r,
-                     const double& a,
-                     const double& f,
-                     const double& b,
-                     const double& c,
-                     const double& m,
-                     const double& g,
-                     const double& etaN,
-                     const double& etaP,
-                     const double& sig2N,
-                     const double& sig2P,
-                     const double& delta,
-                     const double& delta2,
-                     const double& start_t,
-                     const double& max_t,
-                     const double& density_threshold = 1e-5,
-                     const double& precision = 1e-2,
-                     const uint32_t& n_cores = 1,
-                     const bool& show_progress = true,
-                     int32_t return_every = 0) {
+List quantgen_trials_(const uint32_t& n_trials,
+                      const arma::vec& N0,
+                      const arma::vec& P0,
+                      const arma::mat& V0,
+                      const arma::mat& U0,
+                      const double& r,
+                      const double& a,
+                      const double& f,
+                      const double& b,
+                      const double& c,
+                      const double& m,
+                      const double& g,
+                      const double& etaN,
+                      const double& etaP,
+                      const double& sig2N,
+                      const double& sig2P,
+                      const double& delta,
+                      const double& delta2,
+                      const double& start_t,
+                      const double& max_t,
+                      const double& density_threshold,
+                      const double& precision,
+                      const uint32_t& n_cores,
+                      const bool& show_progress,
+                      const uint32_t& return_every) {
 
     std::vector<std::vector<TrialInfo>> infos(2);
     infos[0] = std::vector<TrialInfo>(n_trials);
     infos[1] = std::vector<TrialInfo>(n_trials);
-
-    if (return_every < 0) return_every = 0;
-    const uint32_t return_every_(return_every);
 
     if (V0.n_cols != U0.n_cols) stop("V0 and U0 must have same # columns");
 
@@ -518,7 +459,7 @@ List quantgen_trials(const uint32_t& n_trials,
             one_trial(res_, cons_, i, N0, P0, V0, U0,
                       r, a, f, b, c, m, g, etaN, etaP, sig2N, sig2P, delta, delta2,
                       start_t, max_t, eng, density_threshold, precision,
-                      return_every_);
+                      return_every);
             prog_bar.increment();
         }
     }
@@ -533,37 +474,21 @@ List quantgen_trials(const uint32_t& n_trials,
      Now assembling output:
      -------------
      */
-    // Cumulative # species per trial:
-    arma::Mat<uint32_t> cum_n_spp(n_trials, 2);
-    cum_n_spp(0, 0) = infos[0][0].traits.n_rows;
-    cum_n_spp(0, 1) = infos[1][0].traits.n_rows;
-    for (uint32_t i = 1; i < n_trials; i++) {
-        cum_n_spp(i, 0) = cum_n_spp(i-1, 0) + infos[0][i].traits.n_rows;
-        cum_n_spp(i, 1) = cum_n_spp(i-1, 1) + infos[1][i].traits.n_rows;
-    }
 
+    std::vector<arma::field<arma::mat>> res_cons_mats(2);
+    res_cons_mats[0] = arma::field<arma::mat>(n_trials);
+    res_cons_mats[1] = arma::field<arma::mat>(n_trials);
 
-    std::vector<arma::mat> res_cons(cum_n_spp.n_cols);
-    res_cons[0] = arma::mat(cum_n_spp(n_trials - 1, 0), V0.n_cols + 3);
-    res_cons[1] = arma::mat(cum_n_spp(n_trials - 1, 1), U0.n_cols + 3);
-
-    for (uint32_t j = 0; j < res_cons.size(); j++) {
+    for (uint32_t j = 0; j < res_cons_mats.size(); j++) {
         for (uint32_t i = 0; i < n_trials; i++) {
             // Objects to interact with:
             const TrialInfo& info(infos[j][i]);
-            arma::mat& rc_mat(res_cons[j]);
-            const arma::Col<uint32_t>& cns(cum_n_spp.col(j));
-            // Getting starting and ending points
-            uint32_t start, end;
-            if (i == 0) {
-                start = 0;
-            } else start = cns(i-1);
-            end = cns(i) - 1;
-            auto span_ = arma::span(start, end);
-            rc_mat(span_, arma::span(0)).fill(info.rep + 1);
-            rc_mat(span_, arma::span(1)).fill(info.fitness);
-            rc_mat(span_, arma::span(2)).fill(info.selection);
-            rc_mat(span_, arma::span(3, rc_mat.n_cols - 1)) = info.traits;
+            arma::mat& rc_mat(res_cons_mats[j][i]);
+            // Adjusting matrix:
+            rc_mat.set_size(info.traits.n_rows, info.traits.n_cols + 2);
+            rc_mat.col(0).fill(info.fitness);
+            rc_mat.col(1).fill(info.selection);
+            rc_mat.cols(2, rc_mat.n_cols - 1) = info.traits;
         }
     }
 
@@ -581,20 +506,20 @@ List quantgen_trials(const uint32_t& n_trials,
         }
         output = List::create(
             _["resource"] = List::create(
-                _["final"] = res_cons[0],
+                _["final"] = res_cons_mats[0],
                 _["past_traits"] = res_abund,
                 _["past_abund"] = res_traits
                 ),
             _["consumer"] = List::create(
-                _["final"] = res_cons[1],
+                _["final"] = res_cons_mats[1],
                 _["past_traits"] = cons_abund,
                 _["past_abund"] = cons_traits
                 )
         );
     } else {
         output = List::create(
-            _["resource"] = res_cons[0],
-            _["consumer"] = res_cons[1]
+            _["resource"] = res_cons_mats[0],
+            _["consumer"] = res_cons_mats[1]
         );
     }
 

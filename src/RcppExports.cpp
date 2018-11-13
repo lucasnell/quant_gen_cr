@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// quantgen_trials
-List quantgen_trials(const uint32_t& n_trials, const arma::vec& N0, const arma::vec& P0, const arma::mat& V0, const arma::mat& U0, const double& r, const double& a, const double& f, const double& b, const double& c, const double& m, const double& g, const double& etaN, const double& etaP, const double& sig2N, const double& sig2P, const double& delta, const double& delta2, const double& start_t, const double& max_t, const double& density_threshold, const double& precision, const uint32_t& n_cores, const bool& show_progress, int32_t return_every);
-RcppExport SEXP _quantgenCR_quantgen_trials(SEXP n_trialsSEXP, SEXP N0SEXP, SEXP P0SEXP, SEXP V0SEXP, SEXP U0SEXP, SEXP rSEXP, SEXP aSEXP, SEXP fSEXP, SEXP bSEXP, SEXP cSEXP, SEXP mSEXP, SEXP gSEXP, SEXP etaNSEXP, SEXP etaPSEXP, SEXP sig2NSEXP, SEXP sig2PSEXP, SEXP deltaSEXP, SEXP delta2SEXP, SEXP start_tSEXP, SEXP max_tSEXP, SEXP density_thresholdSEXP, SEXP precisionSEXP, SEXP n_coresSEXP, SEXP show_progressSEXP, SEXP return_everySEXP) {
+// quantgen_trials_
+List quantgen_trials_(const uint32_t& n_trials, const arma::vec& N0, const arma::vec& P0, const arma::mat& V0, const arma::mat& U0, const double& r, const double& a, const double& f, const double& b, const double& c, const double& m, const double& g, const double& etaN, const double& etaP, const double& sig2N, const double& sig2P, const double& delta, const double& delta2, const double& start_t, const double& max_t, const double& density_threshold, const double& precision, const uint32_t& n_cores, const bool& show_progress, const uint32_t& return_every);
+RcppExport SEXP _quantgenCR_quantgen_trials_(SEXP n_trialsSEXP, SEXP N0SEXP, SEXP P0SEXP, SEXP V0SEXP, SEXP U0SEXP, SEXP rSEXP, SEXP aSEXP, SEXP fSEXP, SEXP bSEXP, SEXP cSEXP, SEXP mSEXP, SEXP gSEXP, SEXP etaNSEXP, SEXP etaPSEXP, SEXP sig2NSEXP, SEXP sig2PSEXP, SEXP deltaSEXP, SEXP delta2SEXP, SEXP start_tSEXP, SEXP max_tSEXP, SEXP density_thresholdSEXP, SEXP precisionSEXP, SEXP n_coresSEXP, SEXP show_progressSEXP, SEXP return_everySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,14 +36,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double& >::type precision(precisionSEXP);
     Rcpp::traits::input_parameter< const uint32_t& >::type n_cores(n_coresSEXP);
     Rcpp::traits::input_parameter< const bool& >::type show_progress(show_progressSEXP);
-    Rcpp::traits::input_parameter< int32_t >::type return_every(return_everySEXP);
-    rcpp_result_gen = Rcpp::wrap(quantgen_trials(n_trials, N0, P0, V0, U0, r, a, f, b, c, m, g, etaN, etaP, sig2N, sig2P, delta, delta2, start_t, max_t, density_threshold, precision, n_cores, show_progress, return_every));
+    Rcpp::traits::input_parameter< const uint32_t& >::type return_every(return_everySEXP);
+    rcpp_result_gen = Rcpp::wrap(quantgen_trials_(n_trials, N0, P0, V0, U0, r, a, f, b, c, m, g, etaN, etaP, sig2N, sig2P, delta, delta2, start_t, max_t, density_threshold, precision, n_cores, show_progress, return_every));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_quantgenCR_quantgen_trials", (DL_FUNC) &_quantgenCR_quantgen_trials, 25},
+    {"_quantgenCR_quantgen_trials_", (DL_FUNC) &_quantgenCR_quantgen_trials_, 25},
     {NULL, NULL, 0}
 };
 
