@@ -42,6 +42,14 @@ NULL
 #'
 NULL
 
+#' Checks to see if you're using OpenMP.
+#'
+#' @noRd
+#'
+using_openmp <- function() {
+    .Call(`_quantgenCR_using_openmp`)
+}
+
 #' Multiple trials for a given set of parameter values.
 #'
 #' @inheritParams quantgen_trials

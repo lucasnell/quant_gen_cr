@@ -137,6 +137,11 @@ quantgen_trials <- function(n_trials, N0, P0, V0, U0, r, a, f, b, c, m, g, etaN,
                             return_every = 0) {
 
     if (return_every < 0) return_every <- 0
+    if (n_cores > 1 & ! using_openmp()) {
+        warning("You're specifying multiple cores but don't have OpenMP enabled. ",
+                "This function will instead use only one core.",
+                call. = FALSE)
+    }
 
     call_ <- match.call()
     # So it doesn't show the whole function if using do.call:

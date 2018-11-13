@@ -24,6 +24,21 @@
 using namespace Rcpp;
 
 
+//' Checks to see if you're using OpenMP.
+//'
+//' @noRd
+//'
+//[[Rcpp::export]]
+bool using_openmp() {
+
+    bool out = false;
+
+    #ifdef _OPENMP
+    out = true;
+    #endif
+
+    return out;
+}
 
 
 

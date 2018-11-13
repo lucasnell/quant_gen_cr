@@ -6,6 +6,16 @@
 
 using namespace Rcpp;
 
+// using_openmp
+bool using_openmp();
+RcppExport SEXP _quantgenCR_using_openmp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(using_openmp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // quantgen_trials_
 List quantgen_trials_(const uint32_t& n_trials, const arma::vec& N0, const arma::vec& P0, const arma::mat& V0, const arma::mat& U0, const double& r, const double& a, const double& f, const double& b, const double& c, const double& m, const double& g, const double& etaN, const double& etaP, const double& sig2N, const double& sig2P, const double& delta, const double& delta2, const double& start_t, const double& max_t, const double& density_threshold, const double& precision, const uint32_t& n_cores, const bool& show_progress, const uint32_t& return_every);
 RcppExport SEXP _quantgenCR_quantgen_trials_(SEXP n_trialsSEXP, SEXP N0SEXP, SEXP P0SEXP, SEXP V0SEXP, SEXP U0SEXP, SEXP rSEXP, SEXP aSEXP, SEXP fSEXP, SEXP bSEXP, SEXP cSEXP, SEXP mSEXP, SEXP gSEXP, SEXP etaNSEXP, SEXP etaPSEXP, SEXP sig2NSEXP, SEXP sig2PSEXP, SEXP deltaSEXP, SEXP delta2SEXP, SEXP start_tSEXP, SEXP max_tSEXP, SEXP density_thresholdSEXP, SEXP precisionSEXP, SEXP n_coresSEXP, SEXP show_progressSEXP, SEXP return_everySEXP) {
@@ -43,6 +53,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_quantgenCR_using_openmp", (DL_FUNC) &_quantgenCR_using_openmp, 0},
     {"_quantgenCR_quantgen_trials_", (DL_FUNC) &_quantgenCR_quantgen_trials_, 25},
     {NULL, NULL, 0}
 };
