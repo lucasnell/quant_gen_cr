@@ -294,7 +294,7 @@ void one_trial(TrialInfo& out_resource,
             V(i, j) *= distr(eng);
             // V(i, j) *= R::rlnorm(0, delta);
         }
-        for (uint32_t i = 0; i < q; i++) {
+        for (uint32_t i = 0; i < p; i++) {
             U(i, j) *= distr(eng);
             // U(i, j) *= R::rlnorm(0, delta);
         }
@@ -310,7 +310,7 @@ void one_trial(TrialInfo& out_resource,
                     V(i, j) *= distr(eng);
                     // V(i, j) *= R::rlnorm(0, delta2);
                 }
-                for (uint32_t i = 0; i < q; i++) {
+                for (uint32_t i = 0; i < p; i++) {
                     U(i, j) *= distr(eng);
                     // U(i, j) *= R::rlnorm(0, delta2);
                 }
